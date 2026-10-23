@@ -3,33 +3,129 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistema experto en Prolog</title>
+    <title>Asesor de inscripción — sistema experto en Prolog</title>
     <style>
-      body { font-family: system-ui, sans-serif; max-width: 640px; margin: 48px auto; padding: 0 16px; }
-      h1 { font-size: 1.4rem; }
-      pre { background: #f4f4f4; padding: 12px; border-radius: 6px; overflow: auto; }
-      .ok { color: #0a7d2c; font-weight: 600; }
-      .mal { color: #b3261e; font-weight: 600; }
+      :root { color-scheme: light; }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 780px; margin: 40px auto; padding: 0 16px 60px;
+        color: #1c1c1e; background: #fafafa;
+      }
+      h1 { font-size: 1.5rem; margin-bottom: .2rem; }
+      .sub { color: #666; margin-top: 0; font-size: .95rem; }
+      .fila { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin: 20px 0; }
+      label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; }
+      select {
+        padding: 9px 10px; font-size: 15px; border: 1px solid #ccc;
+        border-radius: 8px; background: #fff; min-width: 180px;
+      }
+      button {
+        padding: 10px 16px; font-size: 15px; cursor: pointer; border: none;
+        border-radius: 8px; background: #1c1c1e; color: #fff;
+      }
+      button:hover { background: #333; }
+      button.sec { background: #e6e6e8; color: #1c1c1e; }
+      .card {
+        background: #fff; border: 1px solid #e2e2e4; border-radius: 10px;
+        padding: 14px 16px; margin-top: 10px;
+      }
+      .si { color: #0a7d2c; font-weight: 700; }
+      .no { color: #b3261e; font-weight: 700; }
+      ul { margin: 8px 0 0; padding-left: 20px; }
+      li { margin: 4px 0; }
+      pre {
+        background: #f1f1f3; border-radius: 8px; padding: 12px;
+        overflow: auto; font-size: 12.5px; margin-top: 18px;
+      }
     </style>
   </head>
   <body>
-    <h1>Sistema experto en Prolog</h1>
-    <p>Estado del servicio: <span id="estado">comprobando…</span></p>
+    <h1>Asesor de inscripción</h1>
+    <p class="sub">
+      Las respuestas las calcula <strong>SWI-Prolog</strong> sobre la base de hechos y reglas;
+      el navegador solo muestra el resultado.
+    </p>
+
+    <div class="fila">
+      <div>
+        <label for="alumno">Alumno</label>
+        <select id="alumno"></select>
+      </div>
+      <button id="btnPuedeTodas">¿Qué materias puede cursar?</button>
+    </div>
+
+    <div class="fila">
+      <div>
+        <label for="alumno2">Alumno</label>
+        <select id="alumno2"></select>
+      </div>
+      <div>
+        <label for="materia">Materia</label>
+        <select id="materia"></select>
+      </div>
+      <button id="btnPuede" class="sec">¿Puede cursarla?</button>
+    </div>
+
+    <div id="res"></div>
     <pre id="detalle">—</pre>
 
     <script>
-      fetch('/status')
-        .then(r => r.json())
-        .then(d => {
-          document.getElementById('estado').textContent = d.ok ? 'en línea' : 'con problemas';
-          document.getElementById('estado').className = d.ok ? 'ok' : 'mal';
-          document.getElementById('detalle').textContent = JSON.stringify(d, null, 2);
-        })
-        .catch(e => {
-          document.getElementById('estado').textContent = 'sin respuesta';
-          document.getElementById('estado').className = 'mal';
-          document.getElementById('detalle').textContent = String(e);
+      const $ = (id) => document.getElementById(id);
+      const res = $('res'), detalle = $('detalle');
+
+      async function consultar(pred, args) {
+        const r = await fetch('/api/consultar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pred, args })
         });
+        const json = await r.json();
+        detalle.textContent = JSON.stringify({ pred, args, respuesta: json }, null, 2);
+        return json;
+      }
+
+      function opciones(sel, valores) {
+        sel.innerHTML = valores.map(v => `<option value="${v}">${v}</option>`).join('');
+      }
+
+      async function cargarDatos() {
+        const r = await fetch('/api/datos');
+        const d = await r.json();
+        opciones($('alumno'), d.alumnos);
+        opciones($('alumno2'), d.alumnos);
+        opciones($('materia'), d.materias);
+      }
+
+      $('btnPuede').addEventListener('click', async () => {
+        const alumno = $('alumno2').value, materia = $('materia').value;
+        res.innerHTML = '<div class="card">consultando…</div>';
+        const j = await consultar('puede_cursar', [alumno, materia]);
+        if (j.resultado === 'ok') {
+          res.innerHTML = `<div class="card"><strong>${alumno}</strong> <span class="si">sí puede</span> cursar <strong>${materia}</strong>.</div>`;
+        } else if (j.resultado === 'sin_solucion') {
+          res.innerHTML = `<div class="card"><strong>${alumno}</strong> <span class="no">no puede</span> cursar <strong>${materia}</strong> (no cumple los prerrequisitos o ya la aprobó).</div>`;
+        } else {
+          res.innerHTML = `<div class="card"><span class="no">Error:</span> ${j.detalle || 'respuesta inesperada'}</div>`;
+        }
+      });
+
+      $('btnPuedeTodas').addEventListener('click', async () => {
+        const alumno = $('alumno').value;
+        res.innerHTML = '<div class="card">consultando el catálogo completo…</div>';
+        const materias = [...$('materia').options].map(o => o.value);
+        const puede = [];
+        for (const m of materias) {
+          const j = await consultar('puede_cursar', [alumno, m]);
+          if (j.resultado === 'ok') puede.push(m);
+        }
+        res.innerHTML = puede.length
+          ? `<div class="card">Materias que <strong>${alumno}</strong> puede cursar:<ul>${puede.map(m => `<li>${m}</li>`).join('')}</ul></div>`
+          : `<div class="card">Según las reglas, <strong>${alumno}</strong> no puede cursar ninguna materia del catálogo.</div>`;
+      });
+
+      cargarDatos().catch(e => {
+        res.innerHTML = `<div class="card"><span class="no">No se pudieron cargar los datos:</span> ${e}</div>`;
+      });
     </script>
   </body>
 </html>

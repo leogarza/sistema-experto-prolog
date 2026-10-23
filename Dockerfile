@@ -13,6 +13,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=build /app/server /app/server
+COPY src/ /app/src/
 ENV PORT=8080
 EXPOSE 8080
 CMD ["/app/server"]
