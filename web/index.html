@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema experto en Prolog</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 640px; margin: 48px auto; padding: 0 16px; }
+      h1 { font-size: 1.4rem; }
+      pre { background: #f4f4f4; padding: 12px; border-radius: 6px; overflow: auto; }
+      .ok { color: #0a7d2c; font-weight: 600; }
+      .mal { color: #b3261e; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <h1>Sistema experto en Prolog</h1>
+    <p>Estado del servicio: <span id="estado">comprobando…</span></p>
+    <pre id="detalle">—</pre>
+
+    <script>
+      fetch('/status')
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('estado').textContent = d.ok ? 'en línea' : 'con problemas';
+          document.getElementById('estado').className = d.ok ? 'ok' : 'mal';
+          document.getElementById('detalle').textContent = JSON.stringify(d, null, 2);
+        })
+        .catch(e => {
+          document.getElementById('estado').textContent = 'sin respuesta';
+          document.getElementById('estado').className = 'mal';
+          document.getElementById('detalle').textContent = String(e);
+        });
+    </script>
+  </body>
+</html>

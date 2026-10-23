@@ -15,10 +15,9 @@ import (
 //go:embed web
 var webFS embed.FS
 
-type consult struct
-{
-	p string `json:"p"`
-	args []string `json:"args"`
+type consult struct {
+	P    string   `json:"p"`
+	Args []string `json:"args"`
 }
 
 func main() {
