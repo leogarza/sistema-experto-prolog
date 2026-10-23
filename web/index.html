@@ -8,16 +8,16 @@
       :root { color-scheme: light; }
       body {
         font-family: system-ui, -apple-system, sans-serif;
-        max-width: 780px; margin: 40px auto; padding: 0 16px 60px;
+        max-width: 820px; margin: 40px auto; padding: 0 16px 60px;
         color: #1c1c1e; background: #fafafa;
       }
       h1 { font-size: 1.5rem; margin-bottom: .2rem; }
       .sub { color: #666; margin-top: 0; font-size: .95rem; }
-      .fila { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin: 20px 0; }
+      .fila { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin: 22px 0; }
       label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; }
       select {
         padding: 9px 10px; font-size: 15px; border: 1px solid #ccc;
-        border-radius: 8px; background: #fff; min-width: 180px;
+        border-radius: 8px; background: #fff; min-width: 200px; max-width: 320px;
       }
       button {
         padding: 10px 16px; font-size: 15px; cursor: pointer; border: none;
@@ -31,100 +31,122 @@
       }
       .si { color: #0a7d2c; font-weight: 700; }
       .no { color: #b3261e; font-weight: 700; }
-      ul { margin: 8px 0 0; padding-left: 20px; }
-      li { margin: 4px 0; }
-      pre {
-        background: #f1f1f3; border-radius: 8px; padding: 12px;
-        overflow: auto; font-size: 12.5px; margin-top: 18px;
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+      .chip {
+        background: #eef2ff; color: #1f2d6b; border-radius: 999px;
+        padding: 4px 10px; font-size: 13px;
       }
+      details { margin-top: 22px; }
+      summary { cursor: pointer; font-weight: 600; }
+      table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 14px; }
+      th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ececef; }
+      th { font-size: .8rem; text-transform: uppercase; color: #666; }
+      .sem { color: #888; font-variant-numeric: tabular-nums; }
     </style>
   </head>
   <body>
     <h1>Asesor de inscripción</h1>
     <p class="sub">
-      Las respuestas las calcula <strong>SWI-Prolog</strong> sobre la base de hechos y reglas;
-      el navegador solo muestra el resultado.
+      Las respuestas las calcula <strong>SWI-Prolog</strong> sobre la retícula real
+      (74 materias y su seriación). El navegador solo muestra el resultado.
     </p>
 
     <div class="fila">
       <div>
-        <label for="alumno">Alumno</label>
+        <label for="alumno">Alumno de prueba</label>
         <select id="alumno"></select>
       </div>
-      <button id="btnPuedeTodas">¿Qué materias puede cursar?</button>
+      <button id="btnCursables">¿Qué materias puede cursar?</button>
     </div>
 
     <div class="fila">
       <div>
-        <label for="alumno2">Alumno</label>
-        <select id="alumno2"></select>
-      </div>
-      <div>
-        <label for="materia">Materia</label>
+        <label for="materia">Consultar una materia</label>
         <select id="materia"></select>
       </div>
-      <button id="btnPuede" class="sec">¿Puede cursarla?</button>
+      <button id="btnPuede" class="sec">¿El alumno puede cursarla?</button>
     </div>
 
     <div id="res"></div>
-    <pre id="detalle">—</pre>
+
+    <details id="cat">
+      <summary>Ver la retícula completa (74 materias)</summary>
+      <div id="tabla"></div>
+    </details>
 
     <script>
       const $ = (id) => document.getElementById(id);
-      const res = $('res'), detalle = $('detalle');
+      const res = $('res');
+      let catalogo = [];
 
-      async function consultar(pred, args) {
-        const r = await fetch('/api/consultar', {
+      const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+      function pintar(datos) {
+        const alumno = $('alumno').value;
+        let html = '';
+        const nombre = $('materia').selectedOptions[0]?.textContent || '';
+        if (datos.resultado === 'sin_solucion' || datos.n === 0) {
+          html = `<div class="card"><strong>${esc(alumno)}</strong> <span class="no">no puede</span> cursarla todavía.</div>`;
+        } else if (datos.materias && datos.materias.length) {
+          html = `<div class="card"><strong>${esc(alumno)}</strong> puede cursar <strong>${datos.n}</strong> materias:<div class="chips">`
+            + datos.materias.map(m => `<span class="chip">${esc(m.nombre)}</span>`).join('')
+            + `</div></div>`;
+        } else if (datos.resultado === 'ok') {
+          html = `<div class="card"><strong>${esc(alumno)}</strong> <span class="si">sí puede</span> cursar <strong>${esc(nombre)}</strong>.</div>`;
+        } else {
+          html = `<div class="card"><span class="no">Error:</span> ${esc(datos.detalle || 'respuesta inesperada')}</div>`;
+        }
+        res.innerHTML = html;
+      }
+
+      async function post(ruta, cuerpo) {
+        const r = await fetch(ruta, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pred, args })
+          body: JSON.stringify(cuerpo)
         });
-        const json = await r.json();
-        detalle.textContent = JSON.stringify({ pred, args, respuesta: json }, null, 2);
-        return json;
+        return r.json();
       }
 
-      function opciones(sel, valores) {
-        sel.innerHTML = valores.map(v => `<option value="${v}">${v}</option>`).join('');
-      }
-
-      async function cargarDatos() {
-        const r = await fetch('/api/datos');
-        const d = await r.json();
-        opciones($('alumno'), d.alumnos);
-        opciones($('alumno2'), d.alumnos);
-        opciones($('materia'), d.materias);
-      }
+      $('btnCursables').addEventListener('click', async () => {
+        const alumno = $('alumno').value;
+        res.innerHTML = '<div class="card">consultando el motor…</div>';
+        try {
+          pintar(await post('/api/cursables', { alumno }));
+        } catch (e) {
+          res.innerHTML = `<div class="card"><span class="no">Error:</span> ${esc(e)}</div>`;
+        }
+      });
 
       $('btnPuede').addEventListener('click', async () => {
-        const alumno = $('alumno2').value, materia = $('materia').value;
-        res.innerHTML = '<div class="card">consultando…</div>';
-        const j = await consultar('puede_cursar', [alumno, materia]);
-        if (j.resultado === 'ok') {
-          res.innerHTML = `<div class="card"><strong>${alumno}</strong> <span class="si">sí puede</span> cursar <strong>${materia}</strong>.</div>`;
-        } else if (j.resultado === 'sin_solucion') {
-          res.innerHTML = `<div class="card"><strong>${alumno}</strong> <span class="no">no puede</span> cursar <strong>${materia}</strong> (no cumple los prerrequisitos o ya la aprobó).</div>`;
-        } else {
-          res.innerHTML = `<div class="card"><span class="no">Error:</span> ${j.detalle || 'respuesta inesperada'}</div>`;
+        const alumno = $('alumno').value, materia = $('materia').value;
+        res.innerHTML = '<div class="card">consultando el motor…</div>';
+        try {
+          pintar(await post('/api/consultar', { pred: 'puede_cursar', args: [alumno, materia] }));
+        } catch (e) {
+          res.innerHTML = `<div class="card"><span class="no">Error:</span> ${esc(e)}</div>`;
         }
       });
 
-      $('btnPuedeTodas').addEventListener('click', async () => {
-        const alumno = $('alumno').value;
-        res.innerHTML = '<div class="card">consultando el catálogo completo…</div>';
-        const materias = [...$('materia').options].map(o => o.value);
-        const puede = [];
-        for (const m of materias) {
-          const j = await consultar('puede_cursar', [alumno, m]);
-          if (j.resultado === 'ok') puede.push(m);
-        }
-        res.innerHTML = puede.length
-          ? `<div class="card">Materias que <strong>${alumno}</strong> puede cursar:<ul>${puede.map(m => `<li>${m}</li>`).join('')}</ul></div>`
-          : `<div class="card">Según las reglas, <strong>${alumno}</strong> no puede cursar ninguna materia del catálogo.</div>`;
-      });
+      async function iniciar() {
+        const r = await fetch('/api/datos');
+        const d = await r.json();
+        catalogo = d.materias || [];
 
-      cargarDatos().catch(e => {
-        res.innerHTML = `<div class="card"><span class="no">No se pudieron cargar los datos:</span> ${e}</div>`;
+        $('alumno').innerHTML = (d.alumnos || [])
+          .map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join('');
+
+        $('materia').innerHTML = catalogo
+          .map(m => `<option value="${esc(m.clave)}">${esc(m.nombre)} (sem. ${m.semestre})</option>`)
+          .join('');
+
+        $('tabla').innerHTML = '<table><thead><tr><th>Sem</th><th>Materia</th><th>Créd.</th><th>Tipo</th></tr></thead><tbody>'
+          + catalogo.map(m => `<tr><td class="sem">${m.semestre}</td><td>${esc(m.nombre)}</td><td>${m.creditos}</td><td>${esc(m.tipo)}</td></tr>`).join('')
+          + '</tbody></table>';
+      }
+
+      iniciar().catch(e => {
+        res.innerHTML = `<div class="card"><span class="no">No se pudo cargar el catálogo:</span> ${esc(e)}</div>`;
       });
     </script>
   </body>

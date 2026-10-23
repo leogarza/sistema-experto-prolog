@@ -2,16 +2,37 @@
 
 %% ------------------------------------------------------------------
 %% Capa de consulta: recibe el JSON del navegador y responde un dict.
-%% La lógica vive en conocimiento.pl; aquí solo se despacha de forma
-%% segura (lista blanca + call/N, nunca se construyen metas con texto
-%% que venga del usuario).
+%% La lógica vive en conocimiento.pl y hechos.pl; aquí solo se despacha
+%% de forma segura (lista blanca + call/N, nunca se construyen metas con
+%% texto que venga del usuario).
 %% ------------------------------------------------------------------
 
-% Datos para llenar los selectores de la interfaz.
+% Catálogo para llenar la interfaz: alumnos de prueba y materias reales.
 datos(Resp) :-
     findall(A, alumno(A, _), Alumnos),
-    findall(M, materia(M, _), Materias),
+    findall(
+        _{clave: Clave, nombre: Nombre, semestre: Sem, creditos: Cred, tipo: Tipo},
+        (   materia(Clave, Cred),
+            nombre(Clave, Nombre),
+            semestre(Clave, Sem),
+            tipo(Clave, Tipo)
+        ),
+        Materias
+    ),
     Resp = _{alumnos: Alumnos, materias: Materias}.
+
+% Materias que un alumno puede cursar, con su nombre legible.
+cursables(Req, Resp) :-
+    atom_string(Alumno, Req.alumno),
+    findall(
+        _{clave: Clave, nombre: Nombre},
+        (   puede_cursar(Alumno, Clave),
+            nombre(Clave, Nombre)
+        ),
+        Materias
+    ),
+    length(Materias, N),
+    Resp = _{alumno: Alumno, n: N, materias: Materias}.
 
 % consultar(+Dict, -Dict)
 consultar(Req, Resp) :-

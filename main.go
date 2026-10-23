@@ -33,6 +33,7 @@ func main() {
 	mux.HandleFunc("/ping", pong)
 	mux.HandleFunc("/status", status)
 	mux.HandleFunc("/api/datos", handleDatos)
+	mux.HandleFunc("/api/cursables", handleCursables)
 	mux.HandleFunc("/api/consultar", handleConsultar)
 
 	srv := &http.Server{
@@ -64,6 +65,21 @@ func status(w http.ResponseWriter, r *http.Request) {
 // GET /api/datos -> alumnos y materias, para llenar los selectores.
 func handleDatos(w http.ResponseWriter, r *http.Request) {
 	resp, err := ejecutarProlog(r.Context(), metaDatos, nil)
+	responderJSON(w, resp, err)
+}
+
+// POST /api/cursables -> materias que un alumno puede cursar, con nombre.
+func handleCursables(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "usa POST", http.StatusMethodNotAllowed)
+		return
+	}
+	cuerpo, err := io.ReadAll(io.LimitReader(r.Body, 1<<20))
+	if err != nil {
+		http.Error(w, "no se pudo leer el cuerpo", http.StatusBadRequest)
+		return
+	}
+	resp, err := ejecutarProlog(r.Context(), metaCursables, cuerpo)
 	responderJSON(w, resp, err)
 }
 

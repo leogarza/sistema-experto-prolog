@@ -11,7 +11,7 @@ import (
 
 // La meta de Prolog se arma aquí, con texto fijo. Los datos del usuario
 // viajan por stdin como JSON, nunca concatenados dentro de la meta.
-const preludio = "consult('src/conocimiento.pl'), consult('src/api.pl'), "
+const preludio = "consult('src/hechos.pl'), consult('src/conocimiento.pl'), consult('src/api.pl'), "
 
 const metaConsultar = preludio +
 	"json_read_dict(user_input, Req), consultar(Req, Resp), " +
@@ -19,6 +19,10 @@ const metaConsultar = preludio +
 
 const metaDatos = preludio +
 	"datos(Resp), json_write_dict(user_output, Resp), nl, halt."
+
+const metaCursables = preludio +
+	"json_read_dict(user_input, Req), cursables(Req, Resp), " +
+	"json_write_dict(user_output, Resp), nl, halt."
 
 func ejecutarProlog(ctx context.Context, meta string, entrada []byte) (map[string]any, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)

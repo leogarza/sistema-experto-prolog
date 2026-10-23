@@ -34,7 +34,6 @@ materia(instrumentacion_y_control, 7.5).
 materia(analisis_y_diseno_de_sistemas, 7.5).
 materia(formulacion_y_evaluacion_de_proyectos_informaticos, 6).
 materia(redes_de_computadoras, 7.5).
-materia(inteligencia_artificial, 7.5).
 materia(sistemas_en_chip, 7.5).
 materia(metodos_cuantitativos_para_la_toma_de_decisiones, 7.5).
 materia(big_data_non_relational_databases, 7.5).
@@ -78,80 +77,79 @@ materia(estancia_profesional, 3).
 materia(desarrollo_de_habilidades_sociales_para_la_alta_direccion, 3).
 
 % ---- nombre legible para la interfaz ----
-nombre(fundamentos_de_programacion, 'Fundamentos De Programacion').
+nombre(fundamentos_de_programacion, 'Fundamentos de Programacion').
 nombre(matematicas_discretas, 'Matematicas Discretas').
 nombre(calculo, 'Calculo').
 nombre(analisis_vectorial, 'Analisis Vectorial').
-nombre(comunicacion_oral_y_escrita, 'Comunicacion Oral Y Escrita').
-nombre(algoritmos_y_estructura_de_datos, 'Algoritmos Y Estructura De Datos').
+nombre(comunicacion_oral_y_escrita, 'Comunicacion Oral y Escrita').
+nombre(algoritmos_y_estructura_de_datos, 'Algoritmos y Estructura de Datos').
 nombre(algebra_lineal, 'Algebra Lineal').
 nombre(calculo_aplicado, 'Calculo Aplicado').
-nombre(mecanica_y_electromagnetismo, 'Mecanica Y Electromagnetismo').
-nombre(ingenieria_etica_y_sociedad, 'Ingenieria Etica Y Sociedad').
+nombre(mecanica_y_electromagnetismo, 'Mecanica y Electromagnetismo').
+nombre(ingenieria_etica_y_sociedad, 'Ingenieria Etica y Sociedad').
 nombre(fundamentos_economicos, 'Fundamentos Economicos').
-nombre(analisis_y_diseno_de_algoritmos, 'Analisis Y Diseño De Algoritmos').
-nombre(paradigmas_de_programacion, 'Paradigmas De Programacion').
+nombre(analisis_y_diseno_de_algoritmos, 'Analisis y Diseño de Algoritmos').
+nombre(paradigmas_de_programacion, 'Paradigmas de Programacion').
 nombre(ecuaciones_diferenciales, 'Ecuaciones Diferenciales').
-nombre(fundamentos_de_diseno_digital, 'Fundamentos De Diseño Digital').
+nombre(fundamentos_de_diseno_digital, 'Fundamentos de Diseño Digital').
 nombre(circuitos_electricos, 'Circuitos Electricos').
-nombre(bases_de_datos, 'Bases De Datos').
+nombre(bases_de_datos, 'Bases de Datos').
 nombre(finanzas_empresariales, 'Finanzas Empresariales').
-nombre(teoria_de_la_computacion, 'Teoria De La Computacion').
-nombre(probabilidad_y_estadistica, 'Probabilidad Y Estadistica').
-nombre(matematicas_avanzadas_para_la_ingenieria, 'Matematicas Avanzadas Para La Ingenieria').
-nombre(diseno_de_sistemas_digitales, 'Diseño De Sistemas Digitales').
+nombre(teoria_de_la_computacion, 'Teoria de la Computacion').
+nombre(probabilidad_y_estadistica, 'Probabilidad y Estadistica').
+nombre(matematicas_avanzadas_para_la_ingenieria, 'Matematicas Avanzadas para la Ingenieria').
+nombre(diseno_de_sistemas_digitales, 'Diseño de Sistemas Digitales').
 nombre(electronica_analogica, 'Electronica Analogica').
-nombre(tecnologias_para_desarrollo_de_aplicaciones_web, 'Tecnologias Para Desarrollo De Aplicaciones Web').
+nombre(tecnologias_para_desarrollo_de_aplicaciones_web, 'Tecnologias para Desarrollo de Aplicaciones Web').
 nombre(sistemas_operativos, 'Sistemas Operativos').
 nombre(compiladores, 'Compiladores').
-nombre(procesamiento_digital_de_senales, 'Procesamiento Digital De Señales').
-nombre(arquitectura_de_computadoras, 'Arquitectura De Computadoras').
-nombre(instrumentacion_y_control, 'Instrumentacion Y Control').
-nombre(analisis_y_diseno_de_sistemas, 'Analisis Y Diseño De Sistemas').
-nombre(formulacion_y_evaluacion_de_proyectos_informaticos, 'Formulacion Y Evaluacion De Proyectos Informaticos').
-nombre(redes_de_computadoras, 'Redes De Computadoras').
-nombre(inteligencia_artificial, 'Inteligencia Artificial').
-nombre(sistemas_en_chip, 'Sistemas En Chip').
-nombre(metodos_cuantitativos_para_la_toma_de_decisiones, 'Metodos Cuantitativos Para La Toma De Decisiones').
-nombre(big_data_non_relational_databases, 'Big Data|Non-Relational Databases').
-nombre(des_de_aplic_software_quallity_assurance_and_desing_patterns, 'Des. De Aplic|Software Quallity Assurance And Desing Patterns').
-nombre(mineria_de_datos_statistical_tools_for_data_analytics, 'Mineria De Datos|Statistical Tools For Data Analytics').
-nombre(instrumental_virtual_virtual_instrumentation, 'Instrumental Virtual|Virtual Instrumentation').
-nombre(internet_de_las_cosas_embedded_systems, 'Internet De Las Cosas|Embedded Systems').
-nombre(gobierno_de_ti_computer_security, 'Gobierno De Ti|Computer Security').
-nombre(criptografia_introduction_to_cryptography, 'Criptografia|Introduction To Cryptography').
-nombre(proc_de_leng_nat_machine_learning, 'Proc. De Leng. Nat|Machine Learning').
-nombre(algoritmos_bioinspirados_genetic_algorithms, 'Algoritmos Bioinspirados|Genetic Algorithms').
-nombre(computacion_grafica_computer_graphics, 'Computacion Grafica|Computer Graphics').
-nombre(vision_por_computadora_machine_learning, 'Vision Por Computadora|Machine Learning').
-nombre(sistemas_complejos_cellular_automata, 'Sistemas Complejos|Cellular Automata').
-nombre(ges_de_emp_de_alta_tec_high_technology_enterprise_management, 'Ges. De Emp. De Alta Tec|High Technology Enterprise Management').
-nombre(topicos_sel_de_com_computig_selected_topics_i, 'Topicos Sel. De Com|Computig Selected Topics I').
-nombre(ingenieria_de_software, 'Ingenieria De Software').
-nombre(aplicaciones_para_comunicaciones_en_red, 'Aplicaciones Para Comunicaciones En Red').
+nombre(procesamiento_digital_de_senales, 'Procesamiento Digital de Señales').
+nombre(arquitectura_de_computadoras, 'Arquitectura de Computadoras').
+nombre(instrumentacion_y_control, 'Instrumentacion y Control').
+nombre(analisis_y_diseno_de_sistemas, 'Analisis y Diseño de Sistemas').
+nombre(formulacion_y_evaluacion_de_proyectos_informaticos, 'Formulacion y Evaluacion de Proyectos Informaticos').
+nombre(redes_de_computadoras, 'Redes de Computadoras').
+nombre(sistemas_en_chip, 'Sistemas en Chip').
+nombre(metodos_cuantitativos_para_la_toma_de_decisiones, 'Metodos Cuantitativos para la Toma de Decisiones').
+nombre(big_data_non_relational_databases, 'Big Data / Non-Relational Databases').
+nombre(des_de_aplic_software_quallity_assurance_and_desing_patterns, 'Des. de Aplic / Software Quallity Assurance And Desing Patterns').
+nombre(mineria_de_datos_statistical_tools_for_data_analytics, 'Mineria de Datos / Statistical Tools For Data Analytics').
+nombre(instrumental_virtual_virtual_instrumentation, 'Instrumental Virtual / Virtual Instrumentation').
+nombre(internet_de_las_cosas_embedded_systems, 'Internet de las Cosas / Embedded Systems').
+nombre(gobierno_de_ti_computer_security, 'Gobierno de Ti / Computer Security').
+nombre(criptografia_introduction_to_cryptography, 'Criptografia / Introduction To Cryptography').
+nombre(proc_de_leng_nat_machine_learning, 'Proc. de Leng. Nat / Machine Learning').
+nombre(algoritmos_bioinspirados_genetic_algorithms, 'Algoritmos Bioinspirados / Genetic Algorithms').
+nombre(computacion_grafica_computer_graphics, 'Computacion Grafica / Computer Graphics').
+nombre(vision_por_computadora_machine_learning, 'Vision por Computadora / Machine Learning').
+nombre(sistemas_complejos_cellular_automata, 'Sistemas Complejos / Cellular Automata').
+nombre(ges_de_emp_de_alta_tec_high_technology_enterprise_management, 'Ges. de Emp. de Alta Tec / High Technology Enterprise Management').
+nombre(topicos_sel_de_com_computig_selected_topics_i, 'Topicos Sel. de Com / Computig Selected Topics I').
+nombre(ingenieria_de_software, 'Ingenieria de Software').
+nombre(aplicaciones_para_comunicaciones_en_red, 'Aplicaciones para Comunicaciones en Red').
 nombre(trabajo_terminal_i, 'Trabajo Terminal I').
 nombre(sistemas_distribuidos, 'Sistemas Distribuidos').
-nombre(big_data_big_data, 'Big Data|Big Data').
-nombre(des_de_aplic_web_client_and_backend_developmen_frameworks, 'Des. De Aplic|Web Client And Backend Developmen Frameworks').
-nombre(mineria_de_datos_data_mining, 'Mineria De Datos|Data Mining').
-nombre(instrumental_virtual_virtual_instrumentiation_applications, 'Instrumental Virtual|Virtual Instrumentiation Applications').
-nombre(internet_de_las_cosas_internet_of_things, 'Internet De Las Cosas|Internet Of Things').
-nombre(gobierno_de_ti_it_governance, 'Gobierno De Ti|It Governance').
-nombre(criptografia_selected_topics_in_cryptography, 'Criptografia|Selected Topics In Cryptography').
-nombre(proc_de_leng_natural_language_processing, 'Proc. De Leng|Natural Language Processing').
-nombre(algoritmos_bioinspirados_bioinformatics, 'Algoritmos Bioinspirados|Bioinformatics').
-nombre(computacion_grafica_virtual_and_augmented_reality, 'Computacion Grafica|Virtual And Augmented Reality').
-nombre(vision_por_computadora_image_analysis, 'Vision Por Computadora|Image Analysis').
-nombre(sistemas_complejos_complex_systems, 'Sistemas Complejos|Complex Systems').
-nombre(ges_de_emp_de_alta_tec_economic_engineering, 'Ges. De Emp. De Alta Tec|Economic Engineering').
-nombre(topicos_sel_de_com_computting_selected_topics_ii, 'Topicos Sel. De Com|Computting Selected Topics Ii').
-nombre(desarrollo_de_aplicaciones_moviles_nativas, 'Desarrollo De Aplicaciones Moviles Nativas').
-nombre(administracion_de_servicios_en_red, 'Administracion De Servicios En Red').
+nombre(big_data_big_data, 'Big Data / Big Data').
+nombre(des_de_aplic_web_client_and_backend_developmen_frameworks, 'Des. de Aplic / Web Client And Backend Developmen Frameworks').
+nombre(mineria_de_datos_data_mining, 'Mineria de Datos / Data Mining').
+nombre(instrumental_virtual_virtual_instrumentiation_applications, 'Instrumental Virtual / Virtual Instrumentiation Applications').
+nombre(internet_de_las_cosas_internet_of_things, 'Internet de las Cosas / Internet Of Things').
+nombre(gobierno_de_ti_it_governance, 'Gobierno de Ti / It Governance').
+nombre(criptografia_selected_topics_in_cryptography, 'Criptografia / Selected Topics In Cryptography').
+nombre(proc_de_leng_natural_language_processing, 'Proc. de Leng / Natural Language Processing').
+nombre(algoritmos_bioinspirados_bioinformatics, 'Algoritmos Bioinspirados / Bioinformatics').
+nombre(computacion_grafica_virtual_and_augmented_reality, 'Computacion Grafica / Virtual And Augmented Reality').
+nombre(vision_por_computadora_image_analysis, 'Vision por Computadora / Image Analysis').
+nombre(sistemas_complejos_complex_systems, 'Sistemas Complejos / Complex Systems').
+nombre(ges_de_emp_de_alta_tec_economic_engineering, 'Ges. de Emp. de Alta Tec / Economic Engineering').
+nombre(topicos_sel_de_com_computting_selected_topics_ii, 'Topicos Sel. de Com / Computting Selected Topics Ii').
+nombre(desarrollo_de_aplicaciones_moviles_nativas, 'Desarrollo de Aplicaciones Moviles Nativas').
+nombre(administracion_de_servicios_en_red, 'Administracion de Servicios en Red').
 nombre(trabajo_terminal_ii, 'Trabajo Terminal Ii').
 nombre(liderazgo_personal, 'Liderazgo Personal').
 nombre(gestion_empresarial, 'Gestion Empresarial').
 nombre(estancia_profesional, 'Estancia Profesional').
-nombre(desarrollo_de_habilidades_sociales_para_la_alta_direccion, 'Desarrollo De Habilidades Sociales Para La Alta Direccion').
+nombre(desarrollo_de_habilidades_sociales_para_la_alta_direccion, 'Desarrollo de Habilidades Sociales para la Alta Direccion').
 
 % ---- semestre del plan de estudios ----
 semestre(fundamentos_de_programacion, 1).
@@ -186,7 +184,6 @@ semestre(instrumentacion_y_control, 5).
 semestre(analisis_y_diseno_de_sistemas, 5).
 semestre(formulacion_y_evaluacion_de_proyectos_informaticos, 5).
 semestre(redes_de_computadoras, 5).
-semestre(inteligencia_artificial, 6).
 semestre(sistemas_en_chip, 6).
 semestre(metodos_cuantitativos_para_la_toma_de_decisiones, 6).
 semestre(big_data_non_relational_databases, 6).
@@ -262,7 +259,6 @@ tipo(instrumentacion_y_control, obligatoria).
 tipo(analisis_y_diseno_de_sistemas, obligatoria).
 tipo(formulacion_y_evaluacion_de_proyectos_informaticos, obligatoria).
 tipo(redes_de_computadoras, obligatoria).
-tipo(inteligencia_artificial, obligatoria).
 tipo(sistemas_en_chip, obligatoria).
 tipo(metodos_cuantitativos_para_la_toma_de_decisiones, obligatoria).
 tipo(big_data_non_relational_databases, optativa).
@@ -315,28 +311,26 @@ prerrequisito(sistemas_en_chip, procesamiento_digital_de_senales).
 prerrequisito(mecanica_y_electromagnetismo, analisis_vectorial).
 prerrequisito(circuitos_electricos, mecanica_y_electromagnetismo).
 prerrequisito(electronica_analogica, circuitos_electricos).
-prerrequisito(intrumentacion_y_control, electronica_analogica).
+prerrequisito(instrumentacion_y_control, electronica_analogica).
 prerrequisito(fundamentos_de_diseno_digital, matematicas_discretas).
 prerrequisito(bases_de_datos, matematicas_discretas).
 prerrequisito(diseno_de_sistemas_digitales, fundamentos_de_diseno_digital).
 prerrequisito(arquitectura_de_computadoras, diseno_de_sistemas_digitales).
 prerrequisito(sistemas_en_chip, arquitectura_de_computadoras).
-prerrequisito(tecnologias_para_el_desarrollo_de_aplicaciones_web, bases_de_datos).
+prerrequisito(tecnologias_para_desarrollo_de_aplicaciones_web, bases_de_datos).
 prerrequisito(analisis_y_diseno_de_sistemas, bases_de_datos).
 prerrequisito(ingenieria_de_software, analisis_y_diseno_de_sistemas).
 prerrequisito(finanzas_empresariales, fundamentos_economicos).
 prerrequisito(formulacion_y_evaluacion_de_proyectos_informaticos, finanzas_empresariales).
 prerrequisito(ingenieria_de_software, formulacion_y_evaluacion_de_proyectos_informaticos).
-prerrequisito(algoritmos_y_estructuras_de_datos, fundamentos_de_programacion).
-prerrequisito(paradigmas_de_programacion, algoritmos_y_estructuras_de_datos).
-prerrequisito(sistemas_operativos, algoritmos_y_estructuras_de_datos).
-prerrequisito(teoria_de_la_computacion, algoritmos_y_estructuras_de_datos).
-prerrequisito(analisis_y_diseno_de_algoritmos, algoritmos_y_estructuras_de_datos).
-prerrequisito(tecnologias_para_el_desarrollo_de_aplicaciones_web, paradigmas_de_programacion).
+prerrequisito(algoritmos_y_estructura_de_datos, fundamentos_de_programacion).
+prerrequisito(paradigmas_de_programacion, algoritmos_y_estructura_de_datos).
+prerrequisito(sistemas_operativos, algoritmos_y_estructura_de_datos).
+prerrequisito(teoria_de_la_computacion, algoritmos_y_estructura_de_datos).
+prerrequisito(analisis_y_diseno_de_algoritmos, algoritmos_y_estructura_de_datos).
+prerrequisito(tecnologias_para_desarrollo_de_aplicaciones_web, paradigmas_de_programacion).
 prerrequisito(compiladores, teoria_de_la_computacion).
 prerrequisito(aplicaciones_para_comunicaciones_en_red, redes_de_computadoras).
 prerrequisito(sistemas_distribuidos, aplicaciones_para_comunicaciones_en_red).
 prerrequisito(administracion_de_servicios_en_red, aplicaciones_para_comunicaciones_en_red).
 prerrequisito(trabajo_terminal_ii, trabajo_terminal_i).
-prerrequisito(optativa_a2, optativa_a1).
-prerrequisito(optativa_b2, optativa_b1).

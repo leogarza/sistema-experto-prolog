@@ -24,6 +24,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 MATERIAS = RAIZ / "datos" / "materias.html"
 SERIACION = RAIZ / "datos" / "seriacion.txt"
+CONOCIMIENTO = RAIZ / "src" / "conocimiento.pl"
 
 
 def atomo(texto: str) -> str:
@@ -60,6 +61,14 @@ def leer_materias():
     return filas
 
 
+def ya_definidas():
+    """Átomos de materia/2 que ya existen en conocimiento.pl: no se repiten."""
+    if not CONOCIMIENTO.exists():
+        return set()
+    texto = CONOCIMIENTO.read_text(encoding="utf-8", errors="replace")
+    return set(re.findall(r"^materia\(([a-z0-9_]+)\s*,", texto, re.M))
+
+
 def leer_seriacion():
     pares = []
     for linea in SERIACION.read_text(encoding="utf-8").splitlines():
@@ -68,8 +77,29 @@ def leer_seriacion():
             continue
         izq, der = [p.strip() for p in linea.split("->", 1)]
         if izq and der:
-            pares.append((atomo(der), atomo(izq)))  # (dependiente, requerida)
+            dep, req = atomo(der), atomo(izq)
+            pares.append((ALIAS.get(dep, dep), ALIAS.get(req, req)))  # (dependiente, requerida)
     return pares
+
+
+# Nombres de la seriación escrita a mano que no coinciden letra por letra
+# con el plan de estudios (plurales, typos). Se corrigen aquí, a la vista.
+ALIAS = {
+    "algoritmos_y_estructuras_de_datos": "algoritmos_y_estructura_de_datos",
+    "tecnologias_para_el_desarrollo_de_aplicaciones_web": "tecnologias_para_desarrollo_de_aplicaciones_web",
+    "intrumentacion_y_control": "instrumentacion_y_control",
+}
+
+CONECTORES = {"de", "del", "la", "las", "el", "los", "y", "en", "para", "por", "con"}
+
+
+def bonito(texto: str) -> str:
+    """'VISION POR COMPUTADORA|MACHINE LEARNING' -> 'Vision por Computadora / Machine learning'."""
+    texto = texto.replace("|", " / ")
+    palabras = texto.title().split()
+    return " ".join(
+        p.lower() if i and p.lower() in CONECTORES else p for i, p in enumerate(palabras)
+    )
 
 
 def escapar(texto: str) -> str:
@@ -80,6 +110,14 @@ def main():
     materias = leer_materias()
     pares = leer_seriacion()
     conocidas = {m["clave"] for m in materias}
+    repetidas = ya_definidas() & conocidas
+    if repetidas:
+        materias = [m for m in materias if m["clave"] not in repetidas]
+        print(
+            "% AVISO: no se repiten porque ya están en conocimiento.pl: "
+            + ", ".join(sorted(repetidas)),
+            file=sys.stderr,
+        )
 
     salida = []
     salida.append("% GENERADO por scripts/generar_hechos.py — no editar a mano.")
@@ -93,7 +131,7 @@ def main():
     salida.append("")
     salida.append("% ---- nombre legible para la interfaz ----")
     for m in materias:
-        salida.append(f"nombre({m['clave']}, '{escapar(m['nombre'].title())}').")
+        salida.append(f"nombre({m['clave']}, '{escapar(bonito(m['nombre']))}').")
 
     salida.append("")
     salida.append("% ---- semestre del plan de estudios ----")
@@ -108,12 +146,21 @@ def main():
 
     salida.append("")
     salida.append("% ---- seriacion: prerrequisito(Materia, Requerida) ----")
-    faltantes = []
+    # Solo se emiten seriaciones cuyas dos materias existen de verdad (las
+    # "optativa_a1/a2" del texto no son materias del plan).
+    validas = {m["clave"] for m in materias} | ya_definidas()
+    faltantes, descartadas = [], []
     for dep, req in pares:
-        salida.append(f"prerrequisito({dep}, {req}).")
-        for x in (dep, req):
-            if x not in conocidas and x not in faltantes:
-                faltantes.append(x)
+        if dep in validas and req in validas:
+            salida.append(f"prerrequisito({dep}, {req}).")
+        else:
+            descartadas.append(f"{dep}<-{req}")
+    if descartadas:
+        print(
+            "% AVISO: seriaciones descartadas por no existir en el plan: "
+            + ", ".join(descartadas),
+            file=sys.stderr,
+        )
 
     print("\n".join(salida))
 
