@@ -1,0 +1,18 @@
+# Datos crudos del SAES: no se publican (extracción local, efímera)
+datos/*.json
+
+# Entorno y secretos
+.env
+.env.*
+
+# Binarios
+/server
+/srv
+*.exe
+
+# Sistema
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
