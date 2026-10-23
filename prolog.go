@@ -11,7 +11,7 @@ import (
 
 // La meta de Prolog se arma aquí, con texto fijo. Los datos del usuario
 // viajan por stdin como JSON, nunca concatenados dentro de la meta.
-const preludio = "consult('src/hechos.pl'), consult('src/conocimiento.pl'), consult('src/api.pl'), "
+const preludio = "consult('src/hechos.pl'), consult('src/horarios.pl'), consult('src/conocimiento.pl'), consult('src/api.pl'), "
 
 const metaConsultar = preludio +
 	"json_read_dict(user_input, Req), consultar(Req, Resp), " +
