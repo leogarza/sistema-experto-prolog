@@ -5,6 +5,7 @@ import (
 	"embed"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
@@ -52,6 +53,11 @@ func main() {
 		}
 
 		writeJSON(w, http.StatusOK, cat)
+	})
+
+	mux.HandleFunc("GET /status", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "ok")
+		w.WriteHeader(http.StatusOK)
 	})
 
 	type revisarRequest struct {
