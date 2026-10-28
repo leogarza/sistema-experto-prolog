@@ -1,153 +1,120 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Asesor de inscripción — sistema experto en Prolog</title>
-    <style>
-      :root { color-scheme: light; }
-      body {
-        font-family: system-ui, -apple-system, sans-serif;
-        max-width: 820px; margin: 40px auto; padding: 0 16px 60px;
-        color: #1c1c1e; background: #fafafa;
-      }
-      h1 { font-size: 1.5rem; margin-bottom: .2rem; }
-      .sub { color: #666; margin-top: 0; font-size: .95rem; }
-      .fila { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin: 22px 0; }
-      label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; }
-      select {
-        padding: 9px 10px; font-size: 15px; border: 1px solid #ccc;
-        border-radius: 8px; background: #fff; min-width: 200px; max-width: 320px;
-      }
-      button {
-        padding: 10px 16px; font-size: 15px; cursor: pointer; border: none;
-        border-radius: 8px; background: #1c1c1e; color: #fff;
-      }
-      button:hover { background: #333; }
-      button.sec { background: #e6e6e8; color: #1c1c1e; }
-      .card {
-        background: #fff; border: 1px solid #e2e2e4; border-radius: 10px;
-        padding: 14px 16px; margin-top: 10px;
-      }
-      .si { color: #0a7d2c; font-weight: 700; }
-      .no { color: #b3261e; font-weight: 700; }
-      .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-      .chip {
-        background: #eef2ff; color: #1f2d6b; border-radius: 999px;
-        padding: 4px 10px; font-size: 13px;
-      }
-      details { margin-top: 22px; }
-      summary { cursor: pointer; font-weight: 600; }
-      table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 14px; }
-      th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ececef; }
-      th { font-size: .8rem; text-transform: uppercase; color: #666; }
-      .sem { color: #888; font-variant-numeric: tabular-nums; }
-    </style>
-  </head>
-  <body>
-    <h1>Asesor de inscripción</h1>
-    <p class="sub">
-      Las respuestas las calcula <strong>SWI-Prolog</strong> sobre la retícula real
-      (74 materias y su seriación). El navegador solo muestra el resultado.
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador de Horarios</title>
+  <link rel="stylesheet" href="/static/estilos.css">
+</head>
+<body>
+  <header class="encabezado">
+    <div>
+      <h1>Sistema experto de materias y horarios</h1>
+      <p class="ayuda">
+        Arrastra las materias de <span class="etiqueta etiqueta-catalogo">Catálogo</span> a
+        <span class="etiqueta etiqueta-cursadas">Ya cursaste</span> o a
+        <span class="etiqueta etiqueta-deseadas">Quieres cursar</span>.
+        Un clic agrega a <em>Quieres cursar</em> y otro clic la regresa al catálogo.
+        Al final, Prolog revisa la seriación y arma tu semana sin traslapes.
+      </p>
+    </div>
+    <button type="button" id="limpiar" class="boton-limpiar" hidden>Limpiar selección</button>
+  </header>
+
+  <main class="cajas">
+    <!-- Catálogo: de aquí salen todas las materias -->
+    <section class="caja caja-catalogo" data-caja="catalogo">
+      <header class="caja-cabecera">
+        <h2>Catálogo</h2>
+        <span class="contador" id="cont-catalogo">cargando…</span>
+      </header>
+      <div class="buscador">
+        <img src="/static/icons/search.png" alt="" width="16" height="16" class="icono-buscar">
+        <input type="search" id="busqueda" placeholder="Buscar materia…" autocomplete="off"
+               aria-label="Buscar materia en el catálogo">
+      </div>
+      <ul class="lista" id="lista-catalogo" aria-label="Catálogo de materias"></ul>
+      <p class="lista-vacia" id="vacio-catalogo">Cargando el catálogo…</p>
+      <p class="suelta-aqui">↓ suelta aquí</p>
+    </section>
+
+    <!-- Materias aprobadas -->
+    <section class="caja caja-cursadas" data-caja="cursadas">
+      <header class="caja-cabecera">
+        <h2>Ya cursaste</h2>
+        <span class="contador" id="cont-cursadas">0 materias</span>
+      </header>
+      <ul class="lista" id="lista-cursadas" aria-label="Materias que ya cursaste"></ul>
+      <p class="lista-vacia" id="vacio-cursadas">Arrastra aquí las materias que ya aprobaste</p>
+      <p class="suelta-aqui">↓ suelta aquí</p>
+    </section>
+
+    <!-- Materias del periodo -->
+    <section class="caja caja-deseadas" data-caja="deseadas">
+      <header class="caja-cabecera">
+        <h2>Quieres cursar</h2>
+        <span class="contador" id="cont-deseadas">0 materias</span>
+      </header>
+      <ul class="lista" id="lista-deseadas" aria-label="Materias que quieres cursar"></ul>
+      <p class="lista-vacia" id="vacio-deseadas">Arrastra aquí las materias de este periodo</p>
+      <div class="acciones">
+        <button type="button" id="revisar" class="boton-revisar" disabled>
+          Revisar con Prolog
+        </button>
+      </div>
+      <div class="veredicto" id="veredicto" hidden></div>
+      <p class="suelta-aqui">↓ suelta aquí</p>
+    </section>
+  </main>
+
+  <!-- La semana armada por prolog: la ultima palabra del sistema -->
+  <section class="panel-horario">
+    <header class="panel-cabecera">
+      <h2>Horario sugerido</h2>
+      <div class="controles">
+        <label for="preferencia">Turno</label>
+        <select id="preferencia">
+          <option value="mixto" selected>Mixto</option>
+          <option value="matutino">Matutino</option>
+          <option value="vespertino">Vespertino</option>
+        </select>
+        <button type="button" id="generar" class="boton-generar" disabled>
+          Generar horario
+        </button>
+      </div>
+    </header>
+
+    <div class="esperando" id="esperando-horario" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Prolog pensando el horario…</span>
+      <span class="esperando-tiempo" id="tiempo-horario"></span>
+      <span class="esperando-nota" id="nota-espera" hidden>
+        el turno mixto puede tardar hasta un minuto
+      </span>
+    </div>
+
+    <div class="resumen-horario" id="resumen-horario" hidden></div>
+
+    <!-- alternativas: la 1a es la mejor, las demas son otras opciones -->
+    <div class="navegador" id="navegador" hidden>
+      <button type="button" id="opcion-anterior" class="boton-flecha"
+              aria-label="Sugerencia anterior">◀</button>
+      <span class="navegador-indice" id="opcion-indice">1 / 1</span>
+      <button type="button" id="opcion-siguiente" class="boton-flecha"
+              aria-label="Sugerencia siguiente">▶</button>
+      <span class="navegador-nota">la primera es la mejor; las demás son alternativas</span>
+    </div>
+
+    <div class="semana-scroll">
+      <div class="semana" id="semana" hidden></div>
+    </div>
+
+    <div class="veredicto" id="error-horario" hidden></div>
+    <p class="lista-vacia" id="vacio-horario">
+      Primero pon materias en “Quieres cursar”
     </p>
+  </section>
 
-    <div class="fila">
-      <div>
-        <label for="alumno">Alumno de prueba</label>
-        <select id="alumno"></select>
-      </div>
-      <button id="btnCursables">¿Qué materias puede cursar?</button>
-    </div>
-
-    <div class="fila">
-      <div>
-        <label for="materia">Consultar una materia</label>
-        <select id="materia"></select>
-      </div>
-      <button id="btnPuede" class="sec">¿El alumno puede cursarla?</button>
-    </div>
-
-    <div id="res"></div>
-
-    <details id="cat">
-      <summary>Ver la retícula completa (74 materias)</summary>
-      <div id="tabla"></div>
-    </details>
-
-    <script>
-      const $ = (id) => document.getElementById(id);
-      const res = $('res');
-      let catalogo = [];
-
-      const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-      function pintar(datos) {
-        const alumno = $('alumno').value;
-        let html = '';
-        const nombre = $('materia').selectedOptions[0]?.textContent || '';
-        if (datos.resultado === 'sin_solucion' || datos.n === 0) {
-          html = `<div class="card"><strong>${esc(alumno)}</strong> <span class="no">no puede</span> cursarla todavía.</div>`;
-        } else if (datos.materias && datos.materias.length) {
-          html = `<div class="card"><strong>${esc(alumno)}</strong> puede cursar <strong>${datos.n}</strong> materias:<div class="chips">`
-            + datos.materias.map(m => `<span class="chip">${esc(m.nombre)}</span>`).join('')
-            + `</div></div>`;
-        } else if (datos.resultado === 'ok') {
-          html = `<div class="card"><strong>${esc(alumno)}</strong> <span class="si">sí puede</span> cursar <strong>${esc(nombre)}</strong>.</div>`;
-        } else {
-          html = `<div class="card"><span class="no">Error:</span> ${esc(datos.detalle || 'respuesta inesperada')}</div>`;
-        }
-        res.innerHTML = html;
-      }
-
-      async function post(ruta, cuerpo) {
-        const r = await fetch(ruta, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(cuerpo)
-        });
-        return r.json();
-      }
-
-      $('btnCursables').addEventListener('click', async () => {
-        const alumno = $('alumno').value;
-        res.innerHTML = '<div class="card">consultando el motor…</div>';
-        try {
-          pintar(await post('/api/cursables', { alumno }));
-        } catch (e) {
-          res.innerHTML = `<div class="card"><span class="no">Error:</span> ${esc(e)}</div>`;
-        }
-      });
-
-      $('btnPuede').addEventListener('click', async () => {
-        const alumno = $('alumno').value, materia = $('materia').value;
-        res.innerHTML = '<div class="card">consultando el motor…</div>';
-        try {
-          pintar(await post('/api/consultar', { pred: 'puede_cursar', args: [alumno, materia] }));
-        } catch (e) {
-          res.innerHTML = `<div class="card"><span class="no">Error:</span> ${esc(e)}</div>`;
-        }
-      });
-
-      async function iniciar() {
-        const r = await fetch('/api/datos');
-        const d = await r.json();
-        catalogo = d.materias || [];
-
-        $('alumno').innerHTML = (d.alumnos || [])
-          .map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join('');
-
-        $('materia').innerHTML = catalogo
-          .map(m => `<option value="${esc(m.clave)}">${esc(m.nombre)} (sem. ${m.semestre})</option>`)
-          .join('');
-
-        $('tabla').innerHTML = '<table><thead><tr><th>Sem</th><th>Materia</th><th>Créd.</th><th>Tipo</th></tr></thead><tbody>'
-          + catalogo.map(m => `<tr><td class="sem">${m.semestre}</td><td>${esc(m.nombre)}</td><td>${m.creditos}</td><td>${esc(m.tipo)}</td></tr>`).join('')
-          + '</tbody></table>';
-      }
-
-      iniciar().catch(e => {
-        res.innerHTML = `<div class="card"><span class="no">No se pudo cargar el catálogo:</span> ${esc(e)}</div>`;
-      });
-    </script>
-  </body>
+  <script src="/static/index.js"></script>
+</body>
 </html>
