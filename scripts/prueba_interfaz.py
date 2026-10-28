@@ -706,6 +706,50 @@ def prueba_horario():
             f"llegan {len(d.get('sugerencias') or [])}")
 
 
+def prueba_codificacion():
+    """GET /materias en crudo: la ñ y los acentos deben llegar en utf-8.
+
+    regresion del bug de render: en el contenedor debian el locale era C,
+    swipl leia hechos.pl como ascii y cada byte del ñ se volvia U+FFFD
+    (dos "cuadritos" en la interfaz). el fix es encoding(utf8) al cargar
+    + ENV LANG en el Dockerfile, y esta prueba lo vigila.
+    """
+    req = urllib.request.Request(BASE + "/materias")
+    with urllib.request.urlopen(req, timeout=10) as r:
+        crudo = r.read()
+        ctype = r.headers.get("Content-Type", "")
+
+    chequea("/materias declara charset utf-8",
+            "charset=utf-8" in ctype.lower(), ctype)
+
+    n_fffd = crudo.count(b"\xef\xbf\xbd") + crudo.lower().count(b"\\ufffd")
+    chequea("ningun U+FFFD (cuadrito) en los datos",
+            n_fffd == 0, f"{n_fffd} replacement chars")
+
+    # la enye correcta: utf-8 crudo (c3 b1) o escape json (00f1)
+    enye_ok = b"Se\xc3\xb1ales" in crudo or b"Se\\u00f1ales" in crudo.lower()
+    chequea("la ñ de 'Señales' llega correcta", enye_ok,
+            _contexto(crudo, b"Procesamiento Digital"))
+
+    # y que el json ademas decodifique al nombre completo
+    try:
+        datos = json.loads(crudo)
+        nombres = [m["nombre"] for m in datos.get("materias", [])]
+        chequea("el nombre 'Procesamiento Digital de Señales' decodifica",
+                "Procesamiento Digital de Señales" in nombres,
+                [n for n in nombres if "Procesamiento" in n])
+        acentos = [n for n in nombres if "Diseño" in n]
+        chequea("los 'Diseño' del catalogo tambien decodifican",
+                len(acentos) >= 3, f"{len(acentos)} con Diseño")
+    except Exception as e:
+        chequea("el json de /materias es parseable", False, str(e))
+
+
+def _contexto(crudo, ancla, extra=30):
+    i = crudo.find(ancla)
+    return repr(crudo[i:i + len(ancla) + extra]) if i >= 0 else "ancla no encontrada"
+
+
 def main():
     try:
         urllib.request.urlopen(f"{BASE}/materias", timeout=5).read()
@@ -713,7 +757,8 @@ def main():
         print("el servidor no responde en", BASE, e, file=sys.stderr)
         return 2
 
-    # primero el endpoint (no necesita navegador), luego la interfaz
+    # primero los endpoints (no necesitan navegador), luego la interfaz
+    prueba_codificacion()
     prueba_horario()
 
     if not os.path.exists(CHROME):

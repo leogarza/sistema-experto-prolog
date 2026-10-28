@@ -23,10 +23,12 @@
 % cual fue el pedo ("prerrequisitos", "carga_maxima", "sin_grupo", ...)
 % ------------------------------------------------------------------------
 
-% cargo el prolog de ahi al lado, inscripcion.pl ya trae los datos
+% cargo el prolog de ahi al lado, inscripcion.pl ya trae los datos.
+% encoding(utf8) explicito: con locale C (contenedores) swipl leeria el
+% archivo como ascii y romperia todo lo que traiga acentos
 :- prolog_load_context(directory, Dir),
    atom_concat(Dir, '/inscripcion.pl', Base),
-   load_files(Base).
+   load_files(Base, [encoding(utf8)]).
 
 :- use_module(library(http/json)).
 :- use_module(library(readutil)).

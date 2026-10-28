@@ -20,11 +20,13 @@
 % ------------------------------------------------------------------------
 
 % cargo los datos usando la ruta de este archivo, asi no depende de desde
-% donde lo corras
+% donde lo corras. el encoding(utf8) va explicito: si el que corre esto
+% tiene locale C (un contenedor, por ejemplo), swipl leeria los archivos
+% como ascii y la ñ y los acentos se volverian U+FFFD
 :- prolog_load_context(directory, Dir),
    atom_concat(Dir, '/datos/hechos.pl', Hechos),
    atom_concat(Dir, '/datos/horarios.pl', Horarios),
-   load_files([Hechos, Horarios]).
+   load_files([Hechos, Horarios], [encoding(utf8)]).
 
 
 % ------------------------------------------------------------------------
